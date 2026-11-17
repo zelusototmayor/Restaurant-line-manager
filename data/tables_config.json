@@ -1,0 +1,6 @@
+[
+  { "size": 2, "count": 20, "combinable": true },
+  { "size": 4, "count": 10, "combinable": true },
+  { "size": 6, "count": 3, "combinable": false },
+  { "size": 10, "count": 1, "combinable": false }
+]

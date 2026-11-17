@@ -1,0 +1,211 @@
+<div class="mx-auto max-w-6xl space-y-6 fade-up">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="space-y-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-white">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          Host View
+        </span>
+        <span class="text-xs font-medium text-slate-400">Floor Operations</span>
+      </div>
+      <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">Table Status</h1>
+      <p class="text-sm text-slate-600">Live seating activity across the dining room</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <%= form_with url: live_reset_path, method: :post, class: "inline" do %>
+        <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-slate-800">
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8 8 0 116.582 6.582M20 4v5h-5"></path></svg>
+          Refresh Data
+        </button>
+      <% end %>
+      <a href="/queue" class="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
+        View Queue
+      </a>
+      <a href="/" class="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
+        Guest Home
+      </a>
+    </div>
+  </div>
+
+  <% if flash[:notice] %>
+    <div class="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+      <svg class="h-5 w-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
+
+  <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-xl border border-white/70 bg-white/90 p-4 shadow-sm">
+      <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+        Total Tables
+      </div>
+      <p class="mt-2 text-2xl font-semibold text-slate-900"><%= @stats[:total_tables] %></p>
+      <p class="mt-0.5 text-xs text-slate-500">Full inventory</p>
+    </div>
+    <div class="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 shadow-sm">
+      <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        Free
+      </div>
+      <p class="mt-2 text-2xl font-semibold text-emerald-700"><%= @stats[:free_tables] %></p>
+      <p class="mt-0.5 text-xs text-emerald-600/70">Ready to seat</p>
+    </div>
+    <div class="rounded-xl border border-amber-100 bg-amber-50/50 p-4 shadow-sm">
+      <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-amber-700">
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        Occupied
+      </div>
+      <p class="mt-2 text-2xl font-semibold text-amber-700"><%= @stats[:occupied_tables] %></p>
+      <p class="mt-0.5 text-xs text-amber-600/70">Currently dining</p>
+    </div>
+    <div class="rounded-xl border border-white/70 bg-white/90 p-4 shadow-sm">
+      <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+        Occupancy
+      </div>
+      <p class="mt-2 text-2xl font-semibold text-slate-900"><%= @stats[:occupancy_rate] %>%</p>
+      <p class="mt-0.5 text-xs text-slate-500">Seated vs total</p>
+    </div>
+  </div>
+
+  <div class="grid gap-4 lg:grid-cols-2">
+    <div class="rounded-2xl border border-white/70 bg-white/95 shadow-lg overflow-hidden">
+      <div class="flex items-center justify-between border-b border-emerald-200/70 bg-emerald-50 px-5 py-3.5">
+        <div class="flex items-center gap-3">
+          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-emerald-900">Free Tables</p>
+            <p class="text-xs text-emerald-700/70"><%= @tables_by_status[:free].count %> available now</p>
+          </div>
+        </div>
+      </div>
+      <div class="max-h-80 overflow-y-auto p-3">
+        <% if @tables_by_status[:free].empty? %>
+          <div class="p-6 text-center text-sm text-slate-500">No free tables</div>
+        <% else %>
+          <div class="grid gap-2 sm:grid-cols-2">
+            <% @tables_by_status[:free].each do |table| %>
+              <div class="rounded-xl border border-emerald-100 bg-emerald-50/60 p-3 transition hover:shadow-sm">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold text-slate-900">Table <%= table[:table_id] %></span>
+                  <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700"><%= table[:table_size] %> seats</span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-white/70 bg-white/95 shadow-lg overflow-hidden">
+      <div class="flex items-center justify-between border-b border-amber-200/70 bg-amber-50 px-5 py-3.5">
+        <div class="flex items-center gap-3">
+          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-amber-900">Occupied Tables</p>
+            <p class="text-xs text-amber-700/70"><%= @tables_by_status[:occupied].count %> in service</p>
+          </div>
+        </div>
+      </div>
+      <div class="max-h-80 overflow-y-auto p-3">
+        <% if @tables_by_status[:occupied].empty? %>
+          <div class="p-6 text-center text-sm text-slate-500">No occupied tables</div>
+        <% else %>
+          <div class="grid gap-2">
+            <% @tables_by_status[:occupied].each do |table| %>
+              <div class="rounded-xl border border-amber-100 bg-amber-50/60 p-3 transition hover:shadow-sm">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="font-semibold text-slate-900">Table <%= table[:table_id] %></span>
+                    <span class="ml-2 text-sm text-slate-600"><%= table[:table_size] %> seats / <%= table[:num_people] %> guests</span>
+                  </div>
+                  <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700"><%= table[:elapsed_time] %> min</span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-white/70 bg-white/95 shadow-lg overflow-hidden">
+      <div class="flex items-center justify-between border-b border-slate-200/70 bg-slate-100 px-5 py-3.5">
+        <div class="flex items-center gap-3">
+          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-200 text-slate-600">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-slate-800">Bill Printed</p>
+            <p class="text-xs text-slate-600/70"><%= @tables_by_status[:bill_printed].count %> finishing soon</p>
+          </div>
+        </div>
+      </div>
+      <div class="max-h-80 overflow-y-auto p-3">
+        <% if @tables_by_status[:bill_printed].empty? %>
+          <div class="p-6 text-center text-sm text-slate-500">No tables with bill printed</div>
+        <% else %>
+          <div class="grid gap-2">
+            <% @tables_by_status[:bill_printed].each do |table| %>
+              <div class="rounded-xl border border-slate-200 bg-white p-3 transition hover:shadow-sm">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="font-semibold text-slate-900">Table <%= table[:table_id] %></span>
+                    <span class="ml-2 text-sm text-slate-600"><%= table[:table_size] %> seats / <%= table[:num_people] %> guests</span>
+                  </div>
+                  <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">Wrapping up</span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-white/70 bg-white/95 shadow-lg overflow-hidden">
+      <div class="flex items-center justify-between border-b border-slate-200/70 bg-slate-100 px-5 py-3.5">
+        <div class="flex items-center gap-3">
+          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-200 text-slate-600">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8 8 0 116.582 6.582M20 4v5h-5"></path></svg>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-slate-800">Cleaning</p>
+            <p class="text-xs text-slate-600/70"><%= @tables_by_status[:cleaning].count %> being reset</p>
+          </div>
+        </div>
+      </div>
+      <div class="max-h-80 overflow-y-auto p-3">
+        <% if @tables_by_status[:cleaning].empty? %>
+          <div class="p-6 text-center text-sm text-slate-500">No tables being cleaned</div>
+        <% else %>
+          <div class="grid gap-2">
+            <% @tables_by_status[:cleaning].each do |table| %>
+              <div class="rounded-xl border border-slate-200 bg-white p-3 transition hover:shadow-sm">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="font-semibold text-slate-900">Table <%= table[:table_id] %></span>
+                    <span class="ml-2 text-sm text-slate-600"><%= table[:table_size] %> seats</span>
+                  </div>
+                  <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600"><%= table[:elapsed_time] %> min</span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-slate-200/70 bg-white/80 px-5 py-4">
+    <div class="flex flex-wrap items-center gap-3 text-sm">
+      <a href="/" class="font-semibold text-slate-700 hover:text-slate-900 transition">Guest Home</a>
+      <span class="text-slate-300">|</span>
+      <a href="/queue" class="font-semibold text-slate-700 hover:text-slate-900 transition">Queue Console</a>
+    </div>
+    <span class="text-xs text-slate-400">Table data refreshes on demand</span>
+  </div>
+</div>

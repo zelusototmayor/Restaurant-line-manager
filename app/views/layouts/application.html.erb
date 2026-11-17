@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Restaurant Line Manager" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+    <% host_mode = request.path.start_with?("/queue", "/live") %>
+    <% guest_mode = !host_mode %>
+    <div class="relative isolate overflow-hidden">
+      <div class="pointer-events-none absolute inset-0 -z-10">
+        <div class="absolute -top-24 right-10 h-72 w-72 rounded-full bg-amber-200/70 blur-3xl"></div>
+        <div class="absolute top-24 left-0 h-64 w-64 rounded-full bg-emerald-200/60 blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-sky-200/50 blur-[120px]"></div>
+      </div>
+
+      <header class="sticky top-0 z-30 border-b border-white/50 bg-white/80 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.7)] backdrop-blur-md">
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+          <a href="/" class="flex items-center gap-2.5 sm:gap-3">
+            <span class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 via-amber-600 to-rose-500 text-white text-sm sm:text-base font-semibold shadow-sm">RL</span>
+            <div>
+              <span class="block text-base sm:text-lg font-semibold tracking-tight">Restaurant Line</span>
+              <span class="block text-[0.65rem] sm:text-xs font-semibold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-slate-500">Demo v0.1</span>
+            </div>
+          </a>
+
+          <nav class="hidden items-center gap-1 rounded-full bg-slate-100/80 p-1 md:flex">
+            <a href="/" class="rounded-full px-4 py-2 text-sm font-medium transition <%= current_page?(root_path) ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-white/50' %>">
+              <span class="flex items-center gap-2">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Home
+              </span>
+            </a>
+            <a href="/queue" class="rounded-full px-4 py-2 text-sm font-medium transition <%= current_page?(queue_path) ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-white/50' %>">
+              <span class="flex items-center gap-2">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Queue
+              </span>
+            </a>
+            <a href="/live" class="rounded-full px-4 py-2 text-sm font-medium transition <%= current_page?(live_path) ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-white/50' %>">
+              <span class="flex items-center gap-2">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                Tables
+              </span>
+            </a>
+          </nav>
+
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="flex items-center rounded-full bg-slate-100 p-0.5 sm:p-1 text-[0.65rem] sm:text-xs font-semibold uppercase tracking-[0.1em] sm:tracking-[0.15em]">
+              <a href="/" class="rounded-full px-2.5 py-1.5 sm:px-3.5 sm:py-2 transition <%= guest_mode ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700' %>">Guest</a>
+              <a href="/queue" class="rounded-full px-2.5 py-1.5 sm:px-3.5 sm:py-2 transition <%= host_mode ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700' %>">Host</a>
+            </div>
+          </div>
+        </div>
+
+        <nav class="flex items-center justify-center gap-1 border-t border-slate-200/50 bg-slate-50/50 px-4 py-2 md:hidden">
+          <a href="/" class="flex-1 rounded-xl px-3 py-2 text-center text-xs font-medium transition <%= current_page?(root_path) ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600' %>">
+            <svg class="mx-auto h-5 w-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            Home
+          </a>
+          <a href="/queue" class="flex-1 rounded-xl px-3 py-2 text-center text-xs font-medium transition <%= current_page?(queue_path) ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600' %>">
+            <svg class="mx-auto h-5 w-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            Queue
+          </a>
+          <a href="/live" class="flex-1 rounded-xl px-3 py-2 text-center text-xs font-medium transition <%= current_page?(live_path) ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600' %>">
+            <svg class="mx-auto h-5 w-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            Tables
+          </a>
+        </nav>
+      </header>
+
+      <main class="page-shell relative z-10 px-4 pb-16 pt-10 sm:px-6 lg:px-8">
+        <%= yield %>
+      </main>
+
+      <footer class="border-t border-slate-200/60 bg-white/90 backdrop-blur">
+        <div class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+          <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
+              <div class="flex items-center gap-2">
+                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-rose-500 text-white text-xs font-semibold">RL</span>
+                <span class="text-sm font-semibold text-slate-700">Restaurant Line Manager</span>
+              </div>
+              <nav class="flex flex-wrap items-center gap-4 text-sm">
+                <a href="/" class="text-slate-500 hover:text-slate-700 transition">Guest Home</a>
+                <span class="text-slate-300">|</span>
+                <a href="/queue" class="text-slate-500 hover:text-slate-700 transition">Queue Console</a>
+                <span class="text-slate-300">|</span>
+                <a href="/live" class="text-slate-500 hover:text-slate-700 transition">Live Tables</a>
+              </nav>
+            </div>
+            <div class="flex flex-col items-start gap-2 sm:items-end">
+              <span class="inline-flex items-center gap-2 rounded-full bg-amber-100/80 px-3 py-1 text-xs font-medium text-amber-800">
+                <span class="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                Demo Environment
+              </span>
+              <span class="text-xs text-slate-400">Data resets periodically • v0.1</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

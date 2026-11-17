@@ -1,0 +1,169 @@
+<div class="mx-auto max-w-6xl space-y-6 fade-up">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="space-y-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-white">
+          <span class="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>
+          Host View
+        </span>
+        <span class="text-xs font-medium text-slate-400">Queue Management</span>
+      </div>
+      <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">Current Waitlist</h1>
+      <p class="text-sm text-slate-600">Live snapshot of every party in line</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <% if @stats[:occupancy_rate] >= 90 %>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-3 py-1.5 text-xs font-semibold text-rose-800">
+          <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
+          Full House
+        </span>
+      <% elsif @stats[:occupancy_rate] >= 70 %>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1.5 text-xs font-semibold text-amber-800">
+          <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+          Busy
+        </span>
+      <% else %>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-semibold text-emerald-800">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+          Open
+        </span>
+      <% end %>
+      <a href="/" class="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
+        Guest Form
+      </a>
+      <% if @waiting_parties.any? %>
+        <%= form_with url: queue_clear_path, method: :post, class: "inline", data: { confirm: 'Clear entire queue? This cannot be undone.' } do %>
+          <button type="submit" class="rounded-full bg-rose-500 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-rose-600">
+            Clear All
+          </button>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if flash[:notice] %>
+    <div class="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+      <svg class="h-5 w-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
+
+  <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-xl border border-white/70 bg-white/90 p-4 shadow-sm">
+      <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+        Occupancy
+      </div>
+      <p class="mt-2 text-2xl font-semibold text-slate-900"><%= @stats[:occupancy_rate] %>%</p>
+      <p class="mt-0.5 text-xs text-slate-500">Tables in use</p>
+    </div>
+    <div class="rounded-xl border border-white/70 bg-white/90 p-4 shadow-sm">
+      <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        Parties
+      </div>
+      <p class="mt-2 text-2xl font-semibold text-slate-900"><%= @waiting_parties.count %></p>
+      <p class="mt-0.5 text-xs text-slate-500">In the queue</p>
+    </div>
+    <div class="rounded-xl border border-white/70 bg-white/90 p-4 shadow-sm">
+      <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+        People
+      </div>
+      <p class="mt-2 text-2xl font-semibold text-slate-900"><%= @waiting_parties.sum { |p| p[:party_size] } %></p>
+      <p class="mt-0.5 text-xs text-slate-500">Total waiting</p>
+    </div>
+    <div class="rounded-xl border border-white/70 bg-white/90 p-4 shadow-sm">
+      <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+        Free Tables
+      </div>
+      <p class="mt-2 text-2xl font-semibold text-emerald-600"><%= @stats[:free_tables] %></p>
+      <p class="mt-0.5 text-xs text-slate-500">Ready to seat</p>
+    </div>
+  </div>
+
+  <div class="overflow-hidden rounded-2xl border border-white/70 bg-white/95 shadow-lg">
+    <div class="flex items-center justify-between border-b border-slate-200/70 bg-slate-900 px-5 py-3.5">
+      <div class="flex items-center gap-3">
+        <svg class="h-5 w-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+        <span class="text-sm font-semibold text-white">Waitlist Queue</span>
+      </div>
+      <span class="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90"><%= @waiting_parties.count %> <%= @waiting_parties.count == 1 ? 'party' : 'parties' %></span>
+    </div>
+
+    <% if @waiting_parties.empty? %>
+      <div class="p-10 text-center">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+          <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+        </div>
+        <p class="text-lg font-semibold text-slate-800">No parties waiting</p>
+        <p class="mt-1 text-sm text-slate-500">The queue is empty. Add a party to start.</p>
+        <a href="/" class="mt-4 inline-flex items-center gap-2 rounded-full bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          Add Guest
+        </a>
+      </div>
+    <% else %>
+      <div class="divide-y divide-slate-100">
+        <% @waiting_parties.each_with_index do |entry, index| %>
+          <div class="group flex flex-col gap-4 p-4 transition hover:bg-slate-50/70 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+            <div class="flex items-start gap-3 sm:items-center sm:gap-4">
+              <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl <%= index == 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' %> font-semibold text-sm">
+                #<%= index + 1 %>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <h3 class="text-base font-semibold text-slate-900 truncate"><%= entry[:party_label] %></h3>
+                  <span class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+                    Q#<%= entry[:queue_number] %>
+                  </span>
+                </div>
+                <div class="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
+                  <span class="inline-flex items-center gap-1.5">
+                    <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Party of <%= entry[:party_size] %>
+                  </span>
+                  <span class="inline-flex items-center gap-1.5">
+                    <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <%= time_ago_in_words(entry[:added_at]) %> ago
+                  </span>
+                </div>
+                <div class="mt-2 flex flex-wrap items-center gap-2">
+                  <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <%= entry[:eta_min] %>-<%= entry[:eta_max] %> min wait
+                  </span>
+                  <% if index == 0 %>
+                    <span class="rounded-full bg-emerald-500 px-2.5 py-1 text-xs font-semibold text-white">Next up</span>
+                  <% elsif index > 0 %>
+                    <span class="text-xs text-slate-500"><%= index %> ahead</span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 sm:flex-shrink-0">
+              <%= form_with url: remove_from_queue_path(entry[:queue_number]), method: :delete, class: "inline" do %>
+                <button type="submit" class="rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-600 shadow-sm transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700">
+                  Remove
+                </button>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-slate-200/70 bg-white/80 px-5 py-4">
+    <div class="flex flex-wrap items-center gap-3 text-sm">
+      <a href="/" class="font-semibold text-slate-700 hover:text-slate-900 transition">Guest Home</a>
+      <span class="text-slate-300">|</span>
+      <a href="/live" class="font-semibold text-slate-700 hover:text-slate-900 transition">Live Tables</a>
+    </div>
+    <span class="text-xs text-slate-400">Queue updates in real-time</span>
+  </div>
+</div>
